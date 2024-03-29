@@ -520,6 +520,8 @@ dd .material-symbols-outlined:hover {
 .buy_amount {
   width: 45px;
   margin: 0 4px 0 0;
+  appearance: none;
+  text-align: center;
 }
 
 .remain_amount {
