@@ -137,6 +137,7 @@ footer div a span {
 
 .popup_pic {
   object-fit: cover;
+  
 }
 
 .popup_close {
@@ -400,7 +401,7 @@ div.close dd {
   margin: 4px 0;
 }
 
-.amount {
+.quantity {
   width: 45px;
   margin: auto;
   text-align: center;
@@ -410,11 +411,36 @@ div.close dd {
   justify-content: center;
 }
 
-/* amountの場合のプルダウンリスト */
-.amount_select {
+.amount, .buy_amount {
   width: 45px;
+  display: flex;
+}
+
+.amount input[type=text], .buy_amount input[type=text] {
+  width: 16px;
   text-align: center;
-  appearance: none;
+}
+
+.amount_button {
+  display: flex;
+  flex-flow: column;
+  gap: 2px;
+  margin: 2px 0;
+}
+
+.amount_button button {
+  width: 18px;
+  height: 20px;
+  padding: 2px;
+  border: 1px solid #444;
+}
+
+#up {
+  background-color: pink;
+}
+
+#down {
+  background-color: #cbf8f5;
 }
 
 /* quantityの場合のプルダウンリスト */
@@ -428,7 +454,7 @@ div.close dd {
   appearance: none;
 }
 
-.amount_text {
+.quantity_text {
   font-size: 10px;
   line-height: normal;
 }

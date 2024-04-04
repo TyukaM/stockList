@@ -69,37 +69,61 @@ const createBuyList = (stock) => {
     item_name.className = "name2";
 
     // 数量を作成
-    let item_amount;
+    const item_amount = document.createElement("div");
     let add_amount;
 
     if (typeof stock.amount !== "undefined") {
       const buy_amount = stock.need - stock.amount;
-      const buy_max_amount = amount_list[amount_list.length - 1].txt - stock.amount + 1;
-
-      item_amount = document.createElement("select");
-      item_amount.className = "buy_amount";
-
-      for(let i=1; i<buy_max_amount; i++){
-        const item_amount_opt = document.createElement("option");
-        item_amount_opt.value = amount_list[i].txt;  //value値
-        item_amount_opt.text = amount_list[i].txt;   //テキスト値
-        item_amount.appendChild(item_amount_opt);
-      }
-      item_amount.options[buy_amount - 1].selected = true;
       add_amount = buy_amount;
 
+      const up_button = document.createElement("button");
+      up_button.textContent = "+";
+      up_button.id = "up";
+      const down_button = document.createElement("button");
+      down_button.textContent = "-";
+      down_button.id = "down";
+      const item_amount_button = document.createElement("div");
+      item_amount_button.appendChild(up_button);
+      item_amount_button.appendChild(down_button);
+      item_amount_button.className = "amount_button";
+
+      const item_amount_text = document.createElement("input");
+      item_amount_text.type = "Text";
+      item_amount_text.value = buy_amount;
+
+      item_amount.appendChild(item_amount_text);
+      item_amount.appendChild(item_amount_button);
+      item_amount.className = "buy_amount";
+
+      // ＋－ボタンをクリックすると、を変更するとIndexedDBデータを更新するイベントリスナー
+      up_button.addEventListener('click', () => {
+        item_amount_text.value++;
+        add_amount = Number(item_amount_text.value);
+      });
+
+      down_button.addEventListener('click', () => {
+        item_amount_text.value--;
+        add_amount = Number(item_amount_text.value);
+      });
+
+      /* リスト内の数量を変更すると数量データを更新するイベントリスナー */
+      item_amount_text.addEventListener("change", (changeAmount) => {
+        if (typeof stock.amount !== "undefined") {
+          add_amount = Number(changeAmount.target.value);
+        }
+      });
+
     } else {
-      item_amount = document.createElement("div");
       item_amount.className = "remain_amount";
       item_amount.textContent = "(残量：" + stock.quantity + ")";
-    }
 
-    /* リスト内の数量を変更すると数量データを更新するイベントリスナー */
-    item_amount.addEventListener("change", (changeAmount) => {
-      if (typeof stock.amount !== "undefined") {
-        add_amount = Number(changeAmount.target.value);
-      }
-    });
+      /* リスト内の数量を変更すると数量データを更新するイベントリスナー */
+      item_amount.addEventListener("change", (changeAmount) => {
+        if (typeof stock.amount !== "undefined") {
+          add_amount = Number(changeAmount.target.value);
+        }
+      });
+    }
 
     /* チェックボックスにチェックを入れると、在庫リストの数量を更新するイベントリスナー */
     item_buy.addEventListener("change", () => {

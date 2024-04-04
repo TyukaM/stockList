@@ -110,51 +110,78 @@ const createStockList = (stock) => {
   // 数量を作成
   const item_amount = document.createElement("div");
 
+  // 数量が個数の場合
   if (typeof stock.amount !== "undefined") {
-    const item_amount_select = document.createElement("select");
-    item_amount_select.className = "amount_select";
+    const up_button = document.createElement("button");
+    up_button.textContent = "+";
+    up_button.id = "up";
+    const down_button = document.createElement("button");
+    down_button.textContent = "-";
+    down_button.id = "down";
+    const item_amount_button = document.createElement("div");
+    item_amount_button.appendChild(up_button);
+    item_amount_button.appendChild(down_button);
+    item_amount_button.className = "amount_button";
 
-    for(let i=0; i<amount_list.length; i++){
-      const item_amount_opt = document.createElement("option");
-      item_amount_opt.value = amount_list[i].txt;  //value値
-      item_amount_opt.text = amount_list[i].txt;   //テキスト値
-      item_amount_select.appendChild(item_amount_opt);
+    const item_amount_text = document.createElement("input");
+    item_amount_text.type = "Text";
+    item_amount_text.value = stock.amount;
 
-      item_amount.appendChild(item_amount_select);
-      item_amount.className = "amount";
-    }
-    item_amount_select.options[stock.amount].selected = true;
+    item_amount.appendChild(item_amount_text);
+    item_amount.appendChild(item_amount_button);
+    item_amount.className = "amount";
+
+    // ＋－ボタンをクリックすると、を変更するとIndexedDBデータを更新するイベントリスナー
+    up_button.addEventListener('click', () => {
+      item_amount_text.value++;
+      stock.amount = Number(item_amount_text.value);
+      DataChange();
+    });
+
+    down_button.addEventListener('click', () => {
+      item_amount_text.value--;
+      stock.amount = Number(item_amount_text.value);
+      DataChange();
+    });
+
+    /* テキストボックスの数量を変更すると数量データを更新するイベントリスナー */
+    item_amount_text.addEventListener("change", (changeAmount) => {
+      if (typeof stock.amount !== "undefined") {
+        stock.amount = Number(changeAmount.target.value);
+        DataChange();
+      }
+    });
 
   } else {
-    const item_amount_select = document.createElement("select");
-    item_amount_select.className = "material-symbols-outlined";
-    item_amount_select.id = "materal_select";
+    const item_quantity_select = document.createElement("select");
+    item_quantity_select.className = "material-symbols-outlined";
+    item_quantity_select.id = "materal_select";
 
-    const item_amount_text = document.createElement("p");
-    item_amount_text.className = "amount_text";
+    const item_quantity_text = document.createElement("p");
+    item_quantity_text.className = "quantity_text";
 
     for(let i=0; i<quantity_list.length; i++){
-      const item_amount_opt = document.createElement("option");
-      item_amount_opt.value = quantity_list[i].txt;  //value値
-      item_amount_opt.text = quantity_list[i].img;   //テキスト値
-      item_amount_opt.style.color = quantity_list[i].color;   //色
-      item_amount_select.appendChild(item_amount_opt);
+      const item_quantity_opt = document.createElement("option");
+      item_quantity_opt.value = quantity_list[i].txt;  //value値
+      item_quantity_opt.text = quantity_list[i].img;   //テキスト値
+      item_quantity_opt.style.color = quantity_list[i].color;   //色
+      item_quantity_select.appendChild(item_quantity_opt);
 
       if (quantity_list[i].txt === stock.quantity) {
-        item_amount_select.options[i].selected = true;
-        item_amount_select.style.color = quantity_list[i].color;
-        item_amount_text.textContent = quantity_list[i].txt;
+        item_quantity_select.options[i].selected = true;
+        item_quantity_select.style.color = quantity_list[i].color;
+        item_quantity_text.textContent = quantity_list[i].txt;
       }
 
-      item_amount.appendChild(item_amount_select);
-      item_amount.appendChild(item_amount_text);
-      item_amount.className = "amount";
+      item_amount.appendChild(item_quantity_select);
+      item_amount.appendChild(item_quantity_text);
+      item_amount.className = "quantity";
 
       // 残量の説明書きを表示する
       let amount_click_count = 0;
-      item_amount_select.addEventListener("click", () => {
+      item_quantity_select.addEventListener("click", () => {
         amount_click_count += 1;
-        const bounds = item_amount_select.getBoundingClientRect(); // クリックされた座標位置を取得
+        const bounds = item_quantity_select.getBoundingClientRect(); // クリックされた座標位置を取得
         const amount_describe = document.querySelector(".amount_describe");
 
         if (amount_describe.style.display = "none") {
@@ -171,7 +198,7 @@ const createStockList = (stock) => {
       });
 
       // プルダウンリスト以外の場所をクリックしたら、残量の説明書きを非表示にする
-      item_amount_select.addEventListener("blur", () => {
+      item_quantity_select.addEventListener("blur", () => {
         const amount_describe = document.querySelector(".amount_describe");
 
         if (amount_describe.style.display = "block") {
@@ -179,6 +206,19 @@ const createStockList = (stock) => {
 
           amount_click_count = 0;
         };
+      });
+
+      // 数量を変更するとIndexedDBデータを更新するイベントリスナー
+      item_amount.addEventListener("change", (changeAmount) => {
+        stock.quantity = changeAmount.target.value;
+
+        for(let i=0; i<quantity_list.length; i++){
+          if (quantity_list[i].txt === changeAmount.target.value) {
+            document.getElementById("materal_select").style.color = quantity_list[i].color;
+            document.querySelector(".quantity_text").textContent = quantity_list[i].txt;
+          }
+        };
+        DataChange();
       });
 
     }
@@ -198,6 +238,23 @@ const createStockList = (stock) => {
   if ((remain_limit < 0) || (remain_limit < 14)) {
     item_limit.classList.add("caution");
   };
+
+  // 期限を変更するとIndexedDBデータを更新するイベントリスナー
+  item_limit.addEventListener("change", (changeLimit) => {
+    stock.limit = changeLimit.target.value;
+    DataChange();
+  
+    // 期限切れ、もしくは期限が2週間以内の場合は、期限を強調する
+    const today = new Date();
+    let remain_limit = new Date(stock.limit) - today;
+    remain_limit = parseInt(remain_limit / 1000 / 60 / 60 / 24);
+    
+    if ((remain_limit < 0) || (remain_limit < 14)) {
+      item_limit.classList.add("caution");
+    } else {
+      item_limit.classList.remove("caution");
+    };
+  });
 
   // 詳細ボタンを作成
   const item_change = document.createElement("span");
@@ -382,43 +439,6 @@ const createStockList = (stock) => {
       stocks_ObjectStore.put(stock);
     };
   };
-
-  /* リスト内の〇〇を変更するとIndexedDBデータを更新するイベントリスナー */
-  // 数量
-  item_amount.addEventListener("change", (changeAmount) => {
-    if (typeof stock.amount !== "undefined") {
-      stock.amount = Number(changeAmount.target.value);
-      DataChange();
-    } else {
-      stock.quantity = changeAmount.target.value;
-
-      for(let i=0; i<quantity_list.length; i++){
-        if (quantity_list[i].txt === changeAmount.target.value) {
-          document.getElementById("materal_select").style.color = quantity_list[i].color;
-          document.querySelector(".amount_text").textContent = quantity_list[i].txt;
-        }
-      };
-      DataChange();
-    }
-  });
-
-  // 期限
-  item_limit.addEventListener("change", (changeLimit) => {
-    stock.limit = changeLimit.target.value;
-    DataChange();
-
-    // 期限切れ、もしくは期限が2週間以内の場合は、期限を強調する
-    const today = new Date();
-    let remain_limit = new Date(stock.limit) - today;
-    remain_limit = parseInt(remain_limit / 1000 / 60 / 60 / 24);
-    
-    if ((remain_limit < 0) || (remain_limit < 14)) {
-      item_limit.classList.add("caution");
-    } else {
-      item_limit.classList.remove("caution");
-    };
-  });
-
 
   /* ddを作成 */
   const dd = document.createElement("dd");
