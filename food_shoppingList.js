@@ -32,7 +32,9 @@ const createBuyList = (stock) => {
 
   // IndexerdDBの数量が必要量を下回った場合、実行
   if (((typeof stock.amount !== "undefined") && (stock.amount - stock.need < 0)) ||
-      (typeof stock.amount === "undefined") && (stock.quantity !== "備蓄あり")) {
+      (typeof stock.amount === "undefined") && (stock.quantity === "在庫なし") ||
+      (typeof stock.amount === "undefined") && (stock.quantity === "あと少し") ||
+      (typeof stock.amount === "undefined") && (stock.quantity === "半分"))  {
         
     // チェックボックスを作成
     const item_buy = document.createElement("input");
