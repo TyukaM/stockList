@@ -193,7 +193,6 @@ const createStockList = (stock) => {
 
         // 偶数回クリックしたら、残量の説明書きを非表示にする
         if (amount_click_count%2 === 0 ) {
-          console.log(amount_click_count);
           amount_describe.style.display = "none"; //非表示にする
         }
       });
@@ -215,8 +214,8 @@ const createStockList = (stock) => {
 
         for(let i=0; i<quantity_list.length; i++){
           if (quantity_list[i].txt === changeAmount.target.value) {
-            document.getElementById("materal_select").style.color = quantity_list[i].color;
-            document.querySelector(".quantity_text").textContent = quantity_list[i].txt;
+            item_quantity_select.style.color = quantity_list[i].color;
+            item_quantity_text.textContent = quantity_list[i].txt;
           }
         };
         DataChange();
