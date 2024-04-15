@@ -75,6 +75,10 @@ footer {
   background-color: #fff;
 }
 
+footer:hover {
+  display: none;
+}
+
 .icon {
   margin: 6px auto 4px;
   font-size: 8px;
@@ -297,7 +301,6 @@ dl {
   border-left: 1px solid #aaa;
   border-right: 1px solid #aaa;
   user-select: none;
-  overflow: scroll;
 }
 
 .title {
