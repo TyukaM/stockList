@@ -219,3 +219,18 @@ function createStocksDB() {
 
 // 関数を実行
 createStocksDB();
+
+
+//* メニュー画面を開く *//
+const menu_open = document.getElementById("menu_open");
+menu_open.addEventListener("click", () => {
+  const menu = document.querySelector(".menu");
+  menu.classList.add("open");
+});
+
+//* メニュー画面の×ボタンを押した後にメニュー画面が閉じる *//
+const close = document.getElementById("menu_close");
+close.addEventListener("click", () => {
+  const menu = document.querySelector(".menu");
+  menu.classList.remove("open");
+});

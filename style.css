@@ -63,42 +63,47 @@ h1 {
   border: 1px solid #f8c2c2;
 }
 
-/* フッター */
-footer {
-  width: 350px;
-  margin: 0;
-  position: fixed;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid #ccc; 
-  background-color: #fff;
+/* メニュー */
+.menu {
+  display: none;
 }
 
-footer:hover {
-  display: none;
+.menu.open {
+  display: block;
+  width: 185px;
+  margin: 0 auto;
+  top: 60px;
+  position: fixed;
+  background-color: #fff;
 }
 
 .icon {
   margin: 6px auto 4px;
-  font-size: 8px;
+  font-size: 14px;
   border-radius: 4px 4px;
   user-select: none;
 }
 
 .icon a {
   display: flex;
-  flex-flow: column;
   margin: 4px 8px;
+  gap: 8px;
 }
 
-footer div a span {
-  text-align: center;
+.icon a span {
+  font-size: 20px;
 }
 
 .icon:hover {
   color: #444;
   background-color: #cbf8f5;
+}
+
+.menu_close {
+  cursor: pointer;
+  position: absolute;
+  top: -8px;
+  right: 2px;
 }
 
 
