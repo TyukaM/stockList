@@ -142,6 +142,13 @@ const createStockList = (stock) => {
       item_amount_text.value--;
       stock.amount = Number(item_amount_text.value);
       DataChange();
+
+      // もし個数が0になったら、期限を削除する
+      if (Number(item_amount_text.value) === 0) {
+        stock.limit = "";
+        DataChange();
+        window.location.reload(false);
+      };
     });
 
     /* テキストボックスの数量を変更すると数量データを更新するイベントリスナー */
@@ -149,6 +156,13 @@ const createStockList = (stock) => {
       if (typeof stock.amount !== "undefined") {
         stock.amount = Number(changeAmount.target.value);
         DataChange();
+
+        // もし個数が0になったら、期限を削除する
+        if (Number(item_amount_text.value) === 0) {
+          stock.limit = "";
+          DataChange();
+          window.location.reload(false);
+        };
       }
     });
 
@@ -218,6 +232,13 @@ const createStockList = (stock) => {
           }
         };
         DataChange();
+
+        // もし数量が在庫なしになったら、期限を削除する
+        if (changeAmount.target.value === "在庫なし") {
+          stock.limit = "";
+          DataChange();
+          window.location.reload(false);
+        };
       });
 
     }
@@ -397,12 +418,23 @@ const createStockList = (stock) => {
         stock.amount = Number(document.querySelector("#change_form #change_amount").value);
         stock.need = Number(document.querySelector("#change_form #change_need").value);
         stock.limit = document.querySelector("#change_form #change_limit").value;
+
+        // もし個数が0になったら、期限を削除する
+        if (Number(document.querySelector("#change_form #change_amount").value) === 0) {
+          stock.limit = "";
+        };
+
       } else {
         stock.pic = document.querySelector("#change_form #change_pic").src;
         stock.category = document.querySelector("#change_form #change_category").value;
         stock.name = document.querySelector("#change_form #change_name").value;
         stock.quantity = document.querySelector("#change_form #change_quantity").value;
         stock.limit = document.querySelector("#change_form #change_limit").value;
+
+        // もし数量が在庫なしになったら、期限を削除する
+        if (document.querySelector("#change_form #change_quantity").value === "在庫なし") {
+          stock.limit = "";
+        };
       }
 
       DataChange();
