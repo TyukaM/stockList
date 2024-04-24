@@ -41,7 +41,7 @@ header .material-symbols-outlined {
   user-select: none;
 }
 
-header .material-symbols-outlined:hover {
+header #menu_open:hover {
   color: #444;
   background-color: #cbf8f5;
 }
