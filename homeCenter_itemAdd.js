@@ -10,8 +10,8 @@ item_add.addEventListener("click", () => {
 });
 
 //* 入力フォーム画面の×ボタンを押した後にポップアップが閉じる *//
-const close = document.getElementById("form_popup_close");
-close.addEventListener("click", () => {
+const form_popup_close = document.getElementById("form_popup_close");
+form_popup_close.addEventListener("click", () => {
   const form_popup = document.getElementById("form_popup");
   form_popup.classList.remove("open");
 });
