@@ -107,6 +107,39 @@ const createStockList = (stock) => {
   item_name.textContent = stock.name;
   item_name.className = "name";
 
+  // 期限を作成
+  let item_limit = document.createElement("input");
+  item_limit.className = "limit";
+  item_limit.type = "Date";
+  item_limit.value = stock.limit;
+
+  // 期限切れ、もしくは期限が2週間以内の場合は、期限を強調する
+  const today = new Date();
+  let remain_limit = new Date(stock.limit) - today;
+  remain_limit = parseInt(remain_limit / 1000 / 60 / 60 / 24);
+  
+  if ((remain_limit < 0) || (remain_limit < 14)) {
+    item_limit.classList.add("caution");
+  };
+
+  // 期限を変更するとIndexedDBデータを更新するイベントリスナー
+  item_limit.addEventListener("change", (changeLimit) => {
+    stock.limit = changeLimit.target.value;
+    DataChange();
+  
+    // 期限切れ、もしくは期限が2週間以内の場合は、期限を強調する
+    const today = new Date();
+    let remain_limit = new Date(stock.limit) - today;
+    remain_limit = parseInt(remain_limit / 1000 / 60 / 60 / 24);
+    
+    if ((remain_limit < 0) || (remain_limit < 14)) {
+      item_limit.classList.add("caution");
+    } else {
+      item_limit.classList.remove("caution");
+    };
+  });
+
+
   // 数量を作成
   const item_amount = document.createElement("div");
 
@@ -139,15 +172,18 @@ const createStockList = (stock) => {
     });
 
     down_button.addEventListener('click', () => {
-      item_amount_text.value--;
-      stock.amount = Number(item_amount_text.value);
-      DataChange();
-
-      // もし個数が0になったら、期限を削除する
-      if (Number(item_amount_text.value) === 0) {
-        stock.limit = "";
+      if (Number(item_amount_text.value) > 0) {
+        item_amount_text.value--;
+        stock.amount = Number(item_amount_text.value);
         DataChange();
-        window.location.reload(false);
+
+        // もし個数が0になったら、期限を削除する
+        if (Number(item_amount_text.value) === 0) {
+          item_limit.value = "";
+          item_limit.classList.remove("caution");
+          stock.limit = "";
+          DataChange();
+        };
       };
     });
 
@@ -159,11 +195,12 @@ const createStockList = (stock) => {
 
         // もし個数が0になったら、期限を削除する
         if (Number(item_amount_text.value) === 0) {
+          item_limit.value = "";
+          item_limit.classList.remove("caution");
           stock.limit = "";
           DataChange();
-          window.location.reload(false);
         };
-      }
+      };
     });
 
   } else {
@@ -235,46 +272,14 @@ const createStockList = (stock) => {
 
         // もし数量が在庫なしになったら、期限を削除する
         if (changeAmount.target.value === "在庫なし") {
+          item_limit.value = "";
+          item_limit.classList.remove("caution");
           stock.limit = "";
           DataChange();
-          window.location.reload(false);
         };
       });
-
     }
   }
-
-  // 期限を作成
-  const item_limit = document.createElement("input");
-  item_limit.className = "limit";
-  item_limit.type = "Date";
-  item_limit.value = stock.limit;
-
-  // 期限切れ、もしくは期限が2週間以内の場合は、期限を強調する
-  const today = new Date();
-  let remain_limit = new Date(stock.limit) - today;
-  remain_limit = parseInt(remain_limit / 1000 / 60 / 60 / 24);
-  
-  if ((remain_limit < 0) || (remain_limit < 14)) {
-    item_limit.classList.add("caution");
-  };
-
-  // 期限を変更するとIndexedDBデータを更新するイベントリスナー
-  item_limit.addEventListener("change", (changeLimit) => {
-    stock.limit = changeLimit.target.value;
-    DataChange();
-  
-    // 期限切れ、もしくは期限が2週間以内の場合は、期限を強調する
-    const today = new Date();
-    let remain_limit = new Date(stock.limit) - today;
-    remain_limit = parseInt(remain_limit / 1000 / 60 / 60 / 24);
-    
-    if ((remain_limit < 0) || (remain_limit < 14)) {
-      item_limit.classList.add("caution");
-    } else {
-      item_limit.classList.remove("caution");
-    };
-  });
 
   // 詳細ボタンを作成
   const item_change = document.createElement("span");
