@@ -155,7 +155,7 @@ const createBuyList = (stock) => {
         stocks_ObjectStore.put(stock);
         
         /* ページをリロードする */
-        window.location.reload(false);
+        //window.location.reload(false);
       }
     });
 
